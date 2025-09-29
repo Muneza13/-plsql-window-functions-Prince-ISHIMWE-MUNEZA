@@ -88,6 +88,7 @@ CREATE TABLE products (
 
 * **Transactions**: Sales records linking customers and products
   Transactions table
+ ** 
 CREATE TABLE transactions (
   transaction_id NUMBER PRIMARY KEY,
   customer_id    NUMBER NOT NULL,
@@ -98,6 +99,7 @@ CREATE TABLE transactions (
   CONSTRAINT fk_customer FOREIGN KEY(customer_id) REFERENCES customers(customer_id),
   CONSTRAINT fk_product FOREIGN KEY(product_id) REFERENCES products(product_id)
 );
+**
 ![table transactions 04](https://github.com/user-attachments/assets/4ebbd173-0a35-4ab9-a0cd-b8627f592bb4)
 
 
