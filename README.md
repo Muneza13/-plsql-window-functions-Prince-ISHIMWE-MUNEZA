@@ -280,3 +280,5 @@ ORDER BY product_id, month_start;
 **Academic Year:** 2025-2026
 
 ---
+"Whoever is faithful in very little is also faithful in much." – Luke 16:10
+Muneza prince ISHIMWE
