@@ -231,16 +231,36 @@ ORDER BY product_id, month_start;
 
 ## 📈 Results Analysis
 
-* **Descriptive (What happened?)**
-  Cement and steel bars consistently ranked as top sellers; Kigali and East regions contributed the highest revenue.
+### **Descriptive (What happened?)**
 
-* **Diagnostic (Why?)**
-  Large orders from top contractors in Kigali drove spikes in monthly totals. Seasonal demand in roofing and paint created fluctuations.
-
-* **Prescriptive (What next?)**
-  Maintain higher inventory of cement and steel; design loyalty promotions for quartile-2 customers to push them toward quartile-1.
+* Cement and steel bars consistently emerged as the **highest-selling products** across all regions.
+* The **Kigali** and **Eastern regions** generated the most revenue, while the **Western region** had the lowest sales.
+* Customer segmentation showed that **20% of customers (Quartile 1)** contributed to more than **60% of total revenue**, while smaller customers were spread across Quartiles 3 and 4.
+* Month-over-month growth analysis revealed **sharp increases during dry construction months** (April–August) and slower growth in the rainy season.
 
 ---
+
+### **Diagnostic (Why did it happen?)**
+
+* The high demand for **cement and steel** is explained by their role as core materials in almost every construction project, from small housing to large infrastructure.
+* Kigali’s dominance is due to **urbanization projects and high population density**, which drive steady construction demand.
+* The seasonal fluctuations in roofing sheets and paint sales align with **weather conditions**: rainy months slow down roofing projects, while dry months accelerate them.
+* The customer quartile analysis highlights that **a small group of loyal contractors** make large, recurring purchases, while smaller buyers contribute less but provide market diversity.
+
+---
+
+### **Prescriptive (What should be done next?)**
+
+* **Inventory Strategy**: Keep higher stock levels of cement and steel bars to avoid shortages in peak months. Reduce overstocking of low-demand products.
+* **Customer Retention**: Introduce loyalty discounts or contract-based deals for top-spending contractors in Quartile 1 to strengthen long-term relationships.
+* **Customer Growth**: Target Quartile 2 and 3 customers with promotional bundles (e.g., cement + roofing package) to push them into higher-spend categories.
+* **Seasonal Planning**: Adjust procurement and marketing to match demand cycles. For example, promote paint and finishing materials in dry months when construction completion is common.
+* **Data-Driven Pricing**: Monitor month-over-month sales and adjust prices strategically—raising them slightly when demand is high and offering discounts during slow periods.
+* **Future Expansion**: Consider opening new warehouses in the East region to reduce logistics costs, since it’s a consistently strong performer.
+
+---
+
+
 
 ## 📚 References
 
@@ -281,4 +301,5 @@ ORDER BY product_id, month_start;
 
 ---
 "Whoever is faithful in very little is also faithful in much." – Luke 16:10
+---
 Muneza prince ISHIMWE
