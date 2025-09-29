@@ -1,6 +1,5 @@
-**Writer(AUTHOR):** Prince ISHIMWE MUNEZA
-**
-**Course**: Database Development with PL/SQL (INSY 8311)  
+**Author:** Prince ISHIMWE MUNEZA
+**Course:** Database Development with PL/SQL (INSY 8311)   
 **Institution**: Adventist University of Central Africa (AUCA)  
 **Instructor**: Eric Maniraguha  
 **Assignment**: Individual Assignment I - Window Functions Mastery Project  
