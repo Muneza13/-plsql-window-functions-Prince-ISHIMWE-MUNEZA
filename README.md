@@ -1,4 +1,12 @@
-# 🏗️ Construction Supply Company – Window Functions Project
+Writer(AUTHOR): Prince ISHIMWE MUNEZA
+**Course**: Database Development with PL/SQL (INSY 8311)  
+**Institution**: Adventist University of Central Africa (AUCA)  
+**Instructor**: Eric Maniraguha  
+**Assignment**: Individual Assignment I - Window Functions Mastery Project  
+**Submission Date**: September 29, 2025
+
+#  Construction Supply Company – Window Functions Project
+
 
 ## 📑 Table of Contents
 
@@ -18,15 +26,21 @@
 
 ## 📌 Project Overview
 
-This project demonstrates the use of **Oracle SQL analytic/window functions** in the context of a **construction supply company**. The analysis provides insights into top-selling products, customer segmentation, monthly growth, and sales trends to support business decisions.
+This project demonstrates the use of **Oracle SQL analytic/window functions** in the context of a **MUNEZA supplies LTD(Construction equipment seller company
+)**. The analysis provides insights into top-selling products, customer segmentation, monthly growth, and sales trends to support business decisions.
+
+*MUNEZA Supplies Ltd is a construction supply company that sells cement, steel bars, bricks, roofing sheets, paint, and other materials across different regions in RWANDA. The management wants to identify top-selling materials per region and quarter, monitor monthly revenue growth, segment customers by spend, and analyze sales trends to guide inventory and marketing decisions.*
 
 ---
 
-## 🏢 Business Problem
+## 🏢 Business Problem/challenge
+MUNEZA supplies LTD faces critical challenges in:
+- Optimizing inventory allocation across regional warehouses
+- Understanding seasonal demand patterns for different construction materials
+- Managing relationships with diverse customer segments (large contractors to individual builders)
+- Predicting demand fluctuations between dry and rainy construction seasons
+- Developing data-driven procurement and pricing strategies
 
-*BuildRwanda Supplies Ltd is a construction supply company that sells cement, steel bars, bricks, roofing sheets, paint, and other materials across different regions. The management wants to identify top-selling materials per region and quarter, monitor monthly revenue growth, segment customers by spend, and analyze sales trends to guide inventory and marketing decisions.*
-
----
 
 ## 🎯 Success Criteria
 
@@ -43,34 +57,138 @@ This project demonstrates the use of **Oracle SQL analytic/window functions** in
 ## 🗂️ Database Schema
 
 **Entity Relationship (ER) Diagram**
-
-```
-customers (customer_id PK) 1 --- * transactions (transaction_id PK) * --- 1 products (product_id PK)
-```
-
+![model er diagram](https://github.com/user-attachments/assets/a9ea92be-3951-4bab-94e1-2ae32d5b0e16)
+               
+               TABLES SQL
+               
 * **Customers**: Construction clients (contractors, companies)
+* -- Customers table
+CREATE TABLE customers (
+  customer_id NUMBER PRIMARY KEY,
+  name        VARCHAR2(100),
+  region      VARCHAR2(50),
+  signup_date DATE
+);
+![table customers 02](https://github.com/user-attachments/assets/f98c4ac2-5e7d-42e9-b383-6f9743dabb8f)
+
+
 * **Products**: Construction materials (cement, steel, bricks, roofing, etc.)
+*  Products table
+CREATE TABLE products (
+  product_id NUMBER PRIMARY KEY,
+  name       VARCHAR2(100),
+  category   VARCHAR2(50),
+  price      NUMBER(10,2)
+);
+![table products 03](https://github.com/user-attachments/assets/e11d58b6-e25f-48d6-b027-5972e0851772)
+
 * **Transactions**: Sales records linking customers and products
+  Transactions table
+CREATE TABLE transactions (
+  transaction_id NUMBER PRIMARY KEY,
+  customer_id    NUMBER NOT NULL,
+  product_id     NUMBER NOT NULL,
+  sale_date      DATE NOT NULL,
+  quantity       NUMBER(5),
+  amount         NUMBER(12,2) NOT NULL,
+  CONSTRAINT fk_customer FOREIGN KEY(customer_id) REFERENCES customers(customer_id),
+  CONSTRAINT fk_product FOREIGN KEY(product_id) REFERENCES products(product_id)
+);
+![table transactions 04](https://github.com/user-attachments/assets/4ebbd173-0a35-4ab9-a0cd-b8627f592bb4)
 
----
 
-## 📜 SQL Scripts
-
-All scripts are inside `/sql/` folder:
-
-* `01_create_tables.sql` → Defines tables (`customers`, `products`, `transactions`)
-* `02_insert_sample_data.sql` → Inserts sample data (≥50 transactions)
-* `03_window_queries.sql` → Contains analytic queries (ranking, running totals, MoM, quartiles, moving averages)
-
----
 
 ## 📊 Analytical Queries
 
 * **Ranking functions** (`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `PERCENT_RANK`) → Top customers/products
+WITH cust_spend AS (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+)
+SELECT customer_id, name, total_spend,
+       ROW_NUMBER() OVER (ORDER BY total_spend DESC) AS row_num,
+       RANK()       OVER (ORDER BY total_spend DESC) AS rnk,
+       DENSE_RANK() OVER (ORDER BY total_spend DESC) AS dense_rnk,
+       PERCENT_RANK() OVER (ORDER BY total_spend DESC) AS pct_rank
+FROM cust_spend
+ORDER BY total_spend DESC;
+![rank function](https://github.com/user-attachments/assets/7bb5431c-081f-40de-8098-a3423c79bfeb)
+
 * **Aggregate windows** (`SUM OVER`) → Running totals per region
+* WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       SUM(monthly_total) OVER (PARTITION BY region ORDER BY month_start
+                                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM monthly_sales
+ORDER BY region, month_start;
+![aggregates](https://github.com/user-attachments/assets/056ec139-7a5f-4789-9b82-edf21d62ef6b)
+
 * **Navigation functions** (`LAG`, `LEAD`) → Month-over-month growth
+* WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start) AS prev_month_total,
+       ROUND(
+         (monthly_total - LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start))
+         / NULLIF(LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start),0) * 100,
+         2
+       ) AS pct_change
+FROM monthly_sales
+ORDER BY region, month_start;
+![navigation](https://github.com/user-attachments/assets/5f9aca38-b385-45cf-9f7c-c93b04ca1fbd)
+
 * **Distribution functions** (`NTILE`, `CUME_DIST`) → Customer segmentation
+* SELECT customer_id, name, total_spend,
+       NTILE(4) OVER (ORDER BY total_spend DESC) AS quartile,
+       CUME_DIST() OVER (ORDER BY total_spend DESC) AS cume_dist
+FROM (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+) cs
+ORDER BY total_spend DESC;
+![distribution](https://github.com/user-attachments/assets/4b841fd1-822c-4da3-bac3-1ecd0dc1a6be)
+
 * **Moving average** (`AVG OVER`) → 3-month product sales trends
+* WITH monthly_prod_sales AS (
+  SELECT TRUNC(sale_date,'MONTH') AS month_start,
+         p.product_id,
+         p.name AS product_name,
+         SUM(amount) AS monthly_total
+  FROM transactions t
+  JOIN products p ON t.product_id = p.product_id
+  GROUP BY TRUNC(sale_date,'MONTH'), p.product_id, p.name
+)
+SELECT month_start,
+       product_id,
+       product_name,
+       monthly_total,
+       AVG(monthly_total) OVER (PARTITION BY product_id ORDER BY month_start
+                                ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS ma_3month
+FROM monthly_prod_sales
+ORDER BY product_id, month_start;
+![average function](https://github.com/user-attachments/assets/73ab580f-b856-4df4-85bc-f831f9e053ad)
+
 
 ---
 
@@ -78,6 +196,7 @@ All scripts are inside `/sql/` folder:
 
 * **Descriptive (What happened?)**
   Cement and steel bars consistently ranked as top sellers; Kigali and East regions contributed the highest revenue.
+  
 
 * **Diagnostic (Why?)**
   Large orders from top contractors in Kigali drove spikes in monthly totals. Seasonal demand in roofing and paint created fluctuations.
@@ -86,21 +205,6 @@ All scripts are inside `/sql/` folder:
   Maintain higher inventory of cement and steel; design loyalty promotions for quartile-2 customers to push them toward quartile-1.
 
 ---
-
-## 🖼️ Screenshots
-
-All query execution results and ER diagram screenshots are available in the `/screenshots/` folder. (≥20 as required).
-
----
-
-## ⚙️ How to Run
-
-1. Open Oracle SQL Developer.
-2. Run `01_create_tables.sql` to create tables.
-3. Run `02_insert_sample_data.sql` to load data.
-4. Run queries from `03_window_queries.sql`.
-5. Verify outputs and take screenshots.
-
 ---
 
 ## 📚 References
