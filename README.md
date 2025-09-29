@@ -1,4 +1,5 @@
 
+
 # 🏗️ Construction Supply Company – Window Functions Project
 
 **Author:** Prince ISHIMWE MUNEZA
@@ -18,11 +19,9 @@
 4. [Database Schema](#️-database-schema)
 5. [Analytical Queries](#-analytical-queries)
 6. [Results Analysis](#-results-analysis)
-7. [Screenshots](#-screenshots)
-8. [How to Run](#-how-to-run)
-9. [References](#-references)
-10. [Academic Integrity Statement](#-academic-integrity-statement)
-11. [Contact Information](#-contact-information)
+7. [References](#-references)
+8. [Academic Integrity Statement](#-academic-integrity-statement)
+9. [Contact Information](#-contact-information)
 
 ---
 
@@ -112,31 +111,135 @@ CREATE TABLE transactions (
 
 ## 📊 Analytical Queries
 
-*(kept exactly as you wrote — sample SQL queries + screenshots)*
+### **Ranking functions** (`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `PERCENT_RANK`) → Top customers/products
+
+```sql
+WITH cust_spend AS (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+)
+SELECT customer_id, name, total_spend,
+       ROW_NUMBER() OVER (ORDER BY total_spend DESC) AS row_num,
+       RANK()       OVER (ORDER BY total_spend DESC) AS rnk,
+       DENSE_RANK() OVER (ORDER BY total_spend DESC) AS dense_rnk,
+       PERCENT_RANK() OVER (ORDER BY total_spend DESC) AS pct_rank
+FROM cust_spend
+ORDER BY total_spend DESC;
+```
+
+![rank function](https://github.com/user-attachments/assets/7bb5431c-081f-40de-8098-a3423c79bfeb)
+
+---
+
+### **Aggregate windows** (`SUM OVER`) → Running totals per region
+
+```sql
+WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       SUM(monthly_total) OVER (PARTITION BY region ORDER BY month_start
+                                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM monthly_sales
+ORDER BY region, month_start;
+```
+
+![aggregates](https://github.com/user-attachments/assets/056ec139-7a5f-4789-9b82-edf21d62ef6b)
+
+---
+
+### **Navigation functions** (`LAG`, `LEAD`) → Month-over-month growth
+
+```sql
+WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start) AS prev_month_total,
+       ROUND(
+         (monthly_total - LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start))
+         / NULLIF(LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start),0) * 100,
+         2
+       ) AS pct_change
+FROM monthly_sales
+ORDER BY region, month_start;
+```
+
+![navigation](https://github.com/user-attachments/assets/5f9aca38-b385-45cf-9f7c-c93b04ca1fbd)
+
+---
+
+### **Distribution functions** (`NTILE`, `CUME_DIST`) → Customer segmentation
+
+```sql
+SELECT customer_id, name, total_spend,
+       NTILE(4) OVER (ORDER BY total_spend DESC) AS quartile,
+       CUME_DIST() OVER (ORDER BY total_spend DESC) AS cume_dist
+FROM (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+) cs
+ORDER BY total_spend DESC;
+```
+
+![distribution](https://github.com/user-attachments/assets/4b841fd1-822c-4da3-bac3-1ecd0dc1a6be)
+
+---
+
+### **Moving average** (`AVG OVER`) → 3-month product sales trends
+
+```sql
+WITH monthly_prod_sales AS (
+  SELECT TRUNC(sale_date,'MONTH') AS month_start,
+         p.product_id,
+         p.name AS product_name,
+         SUM(amount) AS monthly_total
+  FROM transactions t
+  JOIN products p ON t.product_id = p.product_id
+  GROUP BY TRUNC(sale_date,'MONTH'), p.product_id, p.name
+)
+SELECT month_start,
+       product_id,
+       product_name,
+       monthly_total,
+       AVG(monthly_total) OVER (PARTITION BY product_id ORDER BY month_start
+                                ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS ma_3month
+FROM monthly_prod_sales
+ORDER BY product_id, month_start;
+```
+
+![average function](https://github.com/user-attachments/assets/73ab580f-b856-4df4-85bc-f831f9e053ad)
 
 ---
 
 ## 📈 Results Analysis
 
 * **Descriptive (What happened?)**
+  Cement and steel bars consistently ranked as top sellers; Kigali and East regions contributed the highest revenue.
+
 * **Diagnostic (Why?)**
+  Large orders from top contractors in Kigali drove spikes in monthly totals. Seasonal demand in roofing and paint created fluctuations.
+
 * **Prescriptive (What next?)**
-
----
-
-## 🖼️ Screenshots
-
-All query execution results and ER diagram screenshots are included (≥20 screenshots).
-
----
-
-## ⚙️ How to Run
-
-1. Open Oracle SQL Developer.
-2. Run `01_create_tables.sql`.
-3. Run `02_insert_sample_data.sql`.
-4. Run `03_window_queries.sql`.
-5. Take screenshots and review outputs.
+  Maintain higher inventory of cement and steel; design loyalty promotions for quartile-2 customers to push them toward quartile-1.
 
 ---
 
@@ -175,3 +278,4 @@ All query execution results and ER diagram screenshots are included (≥20 scree
 **Institution:** Adventist University of Central Africa (AUCA)
 **Academic Year:** 2025–2026
 
+---
