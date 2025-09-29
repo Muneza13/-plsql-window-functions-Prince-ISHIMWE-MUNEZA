@@ -229,6 +229,27 @@ ORDER BY product_id, month_start;
 ---
 
 ## 🛡️ Academic Integrity Statement
+🛡️ Academic Integrity Statement (Simplified)
 
-> I declare that this project was developed by me for academic purposes. All sources consulted are cited. No unauthorized assistance was used.
+I did not copy content directly from AI tools.
+
+All external sources I used are listed in the References section.
+
+The SQL code was written by me to practice and show my own skills.
+
+The business analysis is based on my own understanding of the course ideas.
+
+Any teamwork was only for discussing concepts, as allowed by course rules.
+
+   “All sources were properly cited. Implementations and analysis represent original work. No AI
+     generated content was copied without attribution or adaptation.”
+      Contact Information
+
+**Student:** Prince ISHIMWE MUNEZA
+**Email:** ishimwemunezaprince@gmail.com 
+**Course:** Database Development with PL/SQL (INSY 8311)  
+**Instructor:** Eric Maniraguha (eric.maniraguha@auca.ac.rw)  
+**Institution:** Adventist University of Central Africa (AUCA)  
+**Academic Year:** 2025-2026
+
 
