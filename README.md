@@ -229,7 +229,6 @@ ORDER BY product_id, month_start;
 ---
 
 ## 🛡️ Academic Integrity Statement
-🛡️ Academic Integrity Statement (Simplified)
 
 I did not copy content directly from AI tools.
 
@@ -246,7 +245,8 @@ Any teamwork was only for discussing concepts, as allowed by course rules.
       Contact Information
 
 **Student:** Prince ISHIMWE MUNEZA
-**Email:** ishimwemunezaprince@gmail.com 
+**Email:** {ishimwemunezaprince@gmail.com} 
+**PHONE NUMBER** +250798552735
 **Course:** Database Development with PL/SQL (INSY 8311)  
 **Instructor:** Eric Maniraguha (eric.maniraguha@auca.ac.rw)  
 **Institution:** Adventist University of Central Africa (AUCA)  
