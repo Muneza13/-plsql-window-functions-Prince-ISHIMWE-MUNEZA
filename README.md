@@ -1,12 +1,11 @@
 
 
 # 🏗️ Construction Supply Company – Window Functions Project
-
 **Author:** Prince ISHIMWE MUNEZA
-**Course:** Database Development with PL/SQL (INSY 8311)
-**Institution**: Adventist University of Central Africa (AUCA)
-**Instructor**: Eric Maniraguha
-**Assignment**: Individual Assignment I - Window Functions Mastery Project
+**Course:** Database Development with PL/SQL (INSY 8311)   
+**Institution**: Adventist University of Central Africa (AUCA)  
+**Instructor**: Eric Maniraguha  
+**Assignment**: Individual Assignment I - Window Functions Mastery Project  
 **Submission Date**: September 29, 2025
 
 ---
@@ -265,17 +264,19 @@ ORDER BY product_id, month_start;
 * The SQL code was written by me to practice and show my own skills.
 * The business analysis is based on my own understanding of the course ideas.
 * Any teamwork was only for discussing concepts, as allowed by course rules.
+*   “All sources were properly cited. Implementations and analysis represent original work. No AI
+     generated content was copied without attribution or adaptation.”
+      Contact Information
 
 ---
 
 ## 📬 Contact Information
-
 **Student:** Prince ISHIMWE MUNEZA
-**Email:** [ishimwemunezaprince@gmail.com](mailto:ishimwemunezaprince@gmail.com)
-**Phone Number:** +250 798 552 735
-**Course:** Database Development with PL/SQL (INSY 8311)
-**Instructor:** Eric Maniraguha ([eric.maniraguha@auca.ac.rw](mailto:eric.maniraguha@auca.ac.rw))
-**Institution:** Adventist University of Central Africa (AUCA)
-**Academic Year:** 2025–2026
+**Email:** {ishimwemunezaprince@gmail.com} 
+**PHONE NUMBER** +250798552735
+**Course:** Database Development with PL/SQL (INSY 8311)  
+**Instructor:** Eric Maniraguha (eric.maniraguha@auca.ac.rw)  
+**Institution:** Adventist University of Central Africa (AUCA)  
+**Academic Year:** 2025-2026
 
 ---
