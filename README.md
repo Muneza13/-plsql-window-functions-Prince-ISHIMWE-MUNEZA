@@ -1,4 +1,4 @@
-Writer(AUTHOR): Prince ISHIMWE MUNEZA
+**Writer(AUTHOR)**: Prince ISHIMWE MUNEZA
 **Course**: Database Development with PL/SQL (INSY 8311)  
 **Institution**: Adventist University of Central Africa (AUCA)  
 **Instructor**: Eric Maniraguha  
@@ -57,23 +57,27 @@ MUNEZA supplies LTD faces critical challenges in:
 ## 🗂️ Database Schema
 
 **Entity Relationship (ER) Diagram**
+
 ![model er diagram](https://github.com/user-attachments/assets/a9ea92be-3951-4bab-94e1-2ae32d5b0e16)
                
                TABLES SQL
                
 * **Customers**: Construction clients (contractors, companies)
 * -- Customers table
+*
 CREATE TABLE customers (
   customer_id NUMBER PRIMARY KEY,
   name        VARCHAR2(100),
   region      VARCHAR2(50),
   signup_date DATE
 );
+*
 ![table customers 02](https://github.com/user-attachments/assets/f98c4ac2-5e7d-42e9-b383-6f9743dabb8f)
 
 
 * **Products**: Construction materials (cement, steel, bricks, roofing, etc.)
 *  Products table
+*  
 CREATE TABLE products (
   product_id NUMBER PRIMARY KEY,
   name       VARCHAR2(100),
