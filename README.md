@@ -1,4 +1,4 @@
-**Writer(AUTHOR)**: Prince ISHIMWE MUNEZA
+**Writer(AUTHOR):** Prince ISHIMWE MUNEZA
 **Course**: Database Development with PL/SQL (INSY 8311)  
 **Institution**: Adventist University of Central Africa (AUCA)  
 **Instructor**: Eric Maniraguha  
