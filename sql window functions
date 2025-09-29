@@ -1,1 +1,92 @@
+1. RANKING FUNCTIONS (ROW_NUMBER, RANK, DENSE_RANK, PERCENT_RANK)
+
+WITH cust_spend AS (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+)
+SELECT customer_id, name, total_spend,
+       ROW_NUMBER() OVER (ORDER BY total_spend DESC) AS row_num,
+       RANK()       OVER (ORDER BY total_spend DESC) AS rnk,
+       DENSE_RANK() OVER (ORDER BY total_spend DESC) AS dense_rnk,
+       PERCENT_RANK() OVER (ORDER BY total_spend DESC) AS pct_rank
+FROM cust_spend
+ORDER BY total_spend DESC
+ 2. AGGREGATE WINDOWS (RUNNING TOTALS)
+
+WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       SUM(monthly_total) OVER (PARTITION BY region ORDER BY month_start
+                                ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM monthly_sales
+ORDER BY region, month_start;
+
+
+ 3. NAVIGATION FUNCTIONS (LAG / LEAD)
+
+WITH monthly_sales AS (
+  SELECT TRUNC(t.sale_date,'MONTH') AS month_start,
+         c.region,
+         SUM(t.amount) AS monthly_total
+  FROM transactions t
+  JOIN customers c ON t.customer_id = c.customer_id
+  GROUP BY TRUNC(t.sale_date,'MONTH'), c.region
+)
+SELECT month_start,
+       region,
+       monthly_total,
+       LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start) AS prev_month_total,
+       ROUND(
+         (monthly_total - LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start))
+         / NULLIF(LAG(monthly_total) OVER (PARTITION BY region ORDER BY month_start),0) * 100,
+         2
+       ) AS pct_change
+FROM monthly_sales
+ORDER BY region, month_start;
+
+4. DISTRIBUTION FUNCTIONS (NTILE, CUME_DIST)
+
+SELECT customer_id, name, total_spend,
+       NTILE(4) OVER (ORDER BY total_spend DESC) AS quartile,
+       CUME_DIST() OVER (ORDER BY total_spend DESC) AS cume_dist
+FROM (
+  SELECT c.customer_id, c.name, SUM(t.amount) AS total_spend
+  FROM customers c
+  JOIN transactions t ON c.customer_id = t.customer_id
+  GROUP BY c.customer_id, c.name
+) cs
+ORDER BY total_spend DESC;
+
+5. MOVING AVERAGE (3-month rolling sales)
+
+WITH monthly_prod_sales AS (
+  SELECT TRUNC(sale_date,'MONTH') AS month_start,
+         p.product_id,
+         p.name AS product_name,
+         SUM(amount) AS monthly_total
+  FROM transactions t
+  JOIN products p ON t.product_id = p.product_id
+  GROUP BY TRUNC(sale_date,'MONTH'), p.product_id, p.name
+)
+SELECT month_start,
+       product_id,
+       product_name,
+       monthly_total,
+       AVG(monthly_total) OVER (PARTITION BY product_id ORDER BY month_start
+                                ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS ma_3month
+FROM monthly_prod_sales
+ORDER BY product_id, month_start;
+
+
+
 
